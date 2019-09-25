@@ -1,32 +1,27 @@
-import java.sql.SQLOutput;
-import java.util.Random;
-
 public class Pennys {
     private String p1;  //player 1's choice
     private String p2;  //player 2's choice
     private String list = "";
-    public int stringLen = 6;
-    Random random = new Random();
 
-    public Pennys(String c1, String c2){
+    public Pennys(String c1, String c2, int length) throws InterruptedException {
         setP1(c1);
         setP2(c2);
-        for(int i =0; i<stringLen; i++){
+        for(int i =0; i<length; i++){
             Integer bin = genRandom();
             list = list.concat(bin.toString());
         }
-        System.out.println("Initial List: " + list);
-        incrementList(list);
+        run();
     }
 
-    public void run() {
-        while (!list.equals(getP1())){
-            incrementList(list);
+    public void run() throws InterruptedException {
+        while (!equals(getP1(), getList())){
+            incrementList();
+            //Thread.sleep(1000);
         }
     }
 
     public int genRandom() {
-        int randomInt = (int)(2.0 * Math.random());
+        int randomInt = (int)(2 * Math.random());
         return randomInt;
     }
 
@@ -54,21 +49,15 @@ public class Pennys {
         this.list = list;
     }
 
-    public String incrementList(String list) {
-        System.out.println("List increment");
-        System.out.println(list);
-        list = list.substring(1);
-        System.out.println(list);
+    public void incrementList() {
+        setList(getList().substring(1));
         Integer bin = genRandom();
-        list = list.concat(bin.toString());
-        System.out.println(list);
-        return list;
+
+        setList(getList().concat(bin.toString()));
+        System.out.println(getList());
     }
 
     public boolean equals(String a, String b) {
-        System.out.println(a);
-        System.out.println(b);
-
         if (a.equals(b)){
             return true;
         }
