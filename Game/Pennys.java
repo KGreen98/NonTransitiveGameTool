@@ -2,6 +2,7 @@ public class Pennys {
     private String p1;  //player 1's choice
     private String p2;  //player 2's choice
     private String list = "";
+    private int index = 1;
 
     public Pennys(String c1, String c2, int length) throws InterruptedException {
         setP1(c1);
@@ -14,6 +15,7 @@ public class Pennys {
     }
 
     public void run() throws InterruptedException {
+
         while (!equals(getP1(), getList())){
             incrementList();
             //Thread.sleep(1000);
@@ -54,7 +56,8 @@ public class Pennys {
         Integer bin = genRandom();
 
         setList(getList().concat(bin.toString()));
-        System.out.println(getList());
+        System.out.println(index + " " + getList());
+        index++;
     }
 
     public boolean equals(String a, String b) {
