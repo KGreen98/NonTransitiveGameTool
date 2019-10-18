@@ -7,9 +7,7 @@ public class MyTreeNode{
     private MyTreeNode parent = null;
     private MyTreeNode left;
     private MyTreeNode right;
-    public List<MyTreeNode> pubLeafList = new ArrayList<>();
     boolean deadend;
-    boolean matchP2;
 
 
     public MyTreeNode(int data, MyTreeNode p) {
@@ -18,11 +16,25 @@ public class MyTreeNode{
         right = null;
         parent = p;
         deadend = false;
-        matchP2 = false;
     }
 
     public int getValue(){
         return data;
+    }
+
+    public MyTreeNode getParent() {
+        return parent;
+    }
+
+    public int findlength() {
+        //length from leaf
+        int length = 0;
+        MyTreeNode node = this;
+        while (node.parent != null){
+            length++;
+            node = node.parent;
+        }
+        return length;
     }
 
     public MyTreeNode getLeftChild() {
@@ -47,58 +59,43 @@ public class MyTreeNode{
         parent.setRightChild(child1);
     }
 
-    public void getLeaves(MyTreeNode parent, List<MyTreeNode> b){
-        if (parent.left!=null){
-                getLeaves(parent.left, b);
+    public List<MyTreeNode> getLeaves(MyTreeNode node){
+        List<MyTreeNode> list = new ArrayList<>();
+        checkLeaves(node, list);
+        return list;
+    }
+
+    public void checkLeaves(MyTreeNode node, List<MyTreeNode> b){
+        if (node.left!=null){
+            checkLeaves(node.left, b);
         }
-        if (parent.right!=null){
-                getLeaves(parent.right, b);
+        if (node.right!=null){
+            checkLeaves(node.right, b);
         }
-        if ((parent.left==null) && (parent.right==null)){
-            b.add(parent);
+        if ((node.left==null) && (node.right==null)){
+            b.add(node);
         }
+
     }
 
     public void addTreeLayer(MyTreeNode parent){
-        System.out.println("    _____");
-        System.out.println("    Increasing Tree Depth");
-        pubLeafList.clear();
-        getLeaves(parent, pubLeafList);
-        for (MyTreeNode a : pubLeafList){
+        List<MyTreeNode> leaves = getLeaves(parent);
+        for (MyTreeNode a : leaves){
             addChildren(a);
         }
-    }
-
-    public void add5Layers(MyTreeNode parent){
-        for (int i=0; i<5; i++){
-            System.out.println("_____");
-            System.out.println(i);
-            pubLeafList.clear();
-            getLeaves(parent, pubLeafList);
-            for (MyTreeNode a : pubLeafList){
-                addChildren(a);
-            }
-        }
+        System.out.println("    Increased Tree Depth:");
     }
 
     public void writeStrings(MyTreeNode parent, int n){
-        System.out.println("_____");
         System.out.println("Write Strings");
-        pubLeafList.clear();
-        getLeaves(parent, pubLeafList);
-        for (MyTreeNode a : pubLeafList){
-
+        List<MyTreeNode> leaves = getLeaves(parent);
+        for (MyTreeNode a : leaves){
             String str = "" + a.getValue();
             for (int i=0; i<(n-1); i++) {
                 a = a.parent;
                 str = str + a.getValue();
             }
-            StringBuffer sbf = new StringBuffer(str);
-            sbf = sbf.reverse();
-            str = sbf.toString();
             System.out.println(str);
         }
     }
-
 }
-
