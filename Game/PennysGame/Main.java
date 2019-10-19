@@ -1,3 +1,7 @@
+package PennysGame;
+
+import PennysGame.Pennys;
+
 import java.util.Scanner;
 
 public class Main {
@@ -5,7 +9,7 @@ public class Main {
     public static void main(String[] args) throws InterruptedException {
         Scanner keyboard = new Scanner(System.in);
 
-        System.out.println("Enter word length between 3 and 50");
+        System.out.println("Enter word length between 3 and 20");
         int myintL = keyboard.nextInt();
         System.out.println(myintL);
         keyboard.nextLine();

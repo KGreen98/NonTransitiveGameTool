@@ -1,3 +1,5 @@
+package PennysGame;
+
 public class Pennys {
     private String p1;  //player 1's choice
     private String p2;  //player 2's choice
@@ -14,11 +16,10 @@ public class Pennys {
         run();
     }
 
-    public void run() throws InterruptedException {
+    public void run() {
 
         while (!equals(getP1(), getList())){
             incrementList();
-            //Thread.sleep(1000);
         }
     }
 

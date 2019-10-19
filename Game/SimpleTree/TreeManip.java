@@ -1,3 +1,7 @@
+package SimpleTree;
+
+import SimpleTree.MyTreeNode;
+
 public class TreeManip {
 
     public int bestProgress(String A, MyTreeNode root){

@@ -1,6 +1,7 @@
+package SimpleTree;
+
 import java.util.ArrayList;
 import java.util.List;
-import java.lang.StringBuffer;
 
 public class MyTreeNode{
     private int data;

@@ -1,3 +1,5 @@
+package PennysGame;
+
 import java.util.*;
 
 public class Graph {
