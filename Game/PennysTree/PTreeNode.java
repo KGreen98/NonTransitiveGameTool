@@ -1,8 +1,5 @@
 package PennysTree;
 
-import java.util.ArrayList;
-import java.util.List;
-
 public class PTreeNode {
     private int data;
     private PTreeNode parent = null;
@@ -26,7 +23,7 @@ public class PTreeNode {
         return parent;
     }
 
-    public int findlength() {
+    public int findLengthFromLeaf() {
         //length from leaf
         int length = 0;
         PTreeNode node = this;
@@ -55,7 +52,7 @@ public class PTreeNode {
     public String writeAsString(){
         //returns branch as string up to root
         String str = "";
-        int n = this.findlength();
+        int n = this.findLengthFromLeaf();
         PTreeNode b = this;
         for (int i=0; i<n; i++) {
             str = str + b.getValue();
