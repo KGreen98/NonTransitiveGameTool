@@ -4,32 +4,26 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class PTreeManip {
-    //TODO FIX THIS
     //Fix for any length of tree as should work regardless of tree length
     public void run(String A, String B, PTreeNode root) {
         PTreeManip manip = new PTreeManip();
         for (int n=0; n<((A.length() * 2) +2); n++){
-            List<PTreeNode> list = getLeaves(root);
-            //TODO change this
-            //if (n >= A.length()) {
-                for (PTreeNode a : list) {
-                    System.out.println(a.writeAsString());
-                    if (n > 0 && n < A.length()){
-                        treeCutEarly(A,B,a);
-                    }
-                    if (n >= A.length()) {
-                    treeCut(A, B, a);
-                        if (a.writeAsString().length() > 1){
-                            treeCutStingChar(A, B, a);
-                        }
+        List<PTreeNode> list = getLeaves(root);
+            for (PTreeNode a : list) {
+                System.out.println(a.writeAsString());
+                if (n > 0 && n < A.length()){
+                    treeCutEarly(A, B, a);
+                }
+                if (n >= A.length()) {
+                treeCut(A, B, a);
+                treeCutEarly(A, B, a);
+                    if (a.writeAsString().length() > 1){
+                        treeCutStingChar(A,B,a);
                     }
                 }
-                manip.addTreeLayer(root);
             }
-//            else {
-//                manip.addTreeLayer(root);
-//            }
-
+            manip.addTreeLayer(root);
+        }
     }
 
     public void addChildren(PTreeNode parent) {
@@ -101,9 +95,8 @@ public class PTreeManip {
     }
 
     public void treeCutEarly(String A, String B, PTreeNode node){
-        int bpA = bestProgress2(A, node);
-        int bpB = bestProgress2(B, node);
-        System.out.println("TCE" + bpA + bpB + " vs " + node.findLengthFromLeaf());
+        int bpA = bestProgress(A, node);
+        int bpB = bestProgress(B, node);
         if ((bpA == node.findLengthFromLeaf()) && (bpB == node.findLengthFromLeaf())){
             node.setDeadend(true);
             System.out.println("Nah, no chance this node will lead to anything good.");
@@ -111,55 +104,30 @@ public class PTreeManip {
     }
 
     //todo, fix for tree < string in length
-    public int bestProgress(String tempA, PTreeNode node){
+    public int bestProgress(String A, PTreeNode node){
         //Returns distance from match, if returns 0, it matches.
-        //If returns Length of A, 0 match.
+        //If returns Length of A, no match.
         //If returns Length of A-1, 1 match.
         //Get total string from tree node up to root
-        String a = node.writeAsString();
-        //Most recent n in tree as String
-        String subString = a.substring(a.length() - tempA.length());
-        //System.out.println("Tree:" + subString + " :vs Input:" + A);
-        String A = tempA;
-        int maxCount = 0;
-        while (A.length()>=0) {
-            //System.out.println("    Tree:" + subString + " :vs Input:" + A);
-            if (A.equals(subString)) {
-                //System.out.println("BestP: " + maxCount);
-                return maxCount;
-            }
-            subString = subString.substring(1);
-            A = A.substring(0, A.length() - 1);
-            maxCount++;
-        }
-        System.out.println("Compare ERROR");
-        return 100000;
-    }
 
-    public int bestProgress2(String A, PTreeNode node){
-        /**
-         * Deals with tree when tree length < A length
-         * If 0, A or B will be satisfied
-         * If 1, Neither A or B are satisfied, cutoff seems appropriate
-         */
+        //Closer to 0 it is, the closer the string is to being a match
+        String nodeString = node.writeAsString();
+        //Most recent n in tree as String
+
         if (node.findLengthFromLeaf() < A.length()){
             A = A.substring(0, node.findLengthFromLeaf());
         }
-        else{
-            System.out.println("Somethings wrong here");
-            return 99999999;
+        if (node.findLengthFromLeaf() > A.length()) {
+            nodeString = nodeString.substring(nodeString.length() - A.length());
         }
-        String a = node.writeAsString();
-        //Most recent n in tree as String
-        String subString = a.substring(a.length() - A.length());
-        //System.out.println("Tree:" + subString + " :vs Input:" + A);
+
+        //System.out.println("Tree:" + nodeString + " :vs Input:" + A);
         int maxCount = 0;
         while (A.length()>=0) {
-            //System.out.println("    Tree:" + subString + " :vs Input:" + A);
-            if (A.equals(subString)) {
+            if (A.equals(nodeString)) {
                 return maxCount;
             }
-            subString = subString.substring(1);
+            nodeString = nodeString.substring(1);
             A = A.substring(0, A.length() - 1);
             maxCount++;
         }
