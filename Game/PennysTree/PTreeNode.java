@@ -1,5 +1,7 @@
 package PennysTree;
 
+import java.util.ArrayList;
+
 public class PTreeNode {
     private int data;
     private PTreeNode parent = null;
@@ -7,12 +9,15 @@ public class PTreeNode {
     private PTreeNode right;
     private boolean deadend;
 
+    private TreeMarking terminalMark;
+
     public PTreeNode(int data, PTreeNode p) {
         this.data = data;
         left = null;
         right = null;
         parent = p;
         deadend = false;
+        terminalMark = null;
     }
 
     public int getValue(){
@@ -21,6 +26,14 @@ public class PTreeNode {
 
     public PTreeNode getParent() {
         return parent;
+    }
+
+    public PTreeNode getRoot(){
+        PTreeNode node = this;
+        while (node.parent != null){
+            node = node.parent;
+        }
+        return node;
     }
 
     public int findLengthFromLeaf() {
@@ -49,6 +62,11 @@ public class PTreeNode {
         right = node;
     }
 
+    public void removeChildren(){
+        setLeftChild(null);
+        setRightChild(null);
+    }
+
     public String writeAsString(){
         //returns branch as string up to root
         String str = "";
@@ -61,4 +79,13 @@ public class PTreeNode {
         str = new StringBuilder(str).reverse().toString();
         return str;
     }
+
+    public TreeMarking getTerminalMark() {
+        return terminalMark;
+    }
+
+    public void setTerminalMark(TreeMarking terminalMark) {
+        this.terminalMark = terminalMark;
+    }
+
 }
