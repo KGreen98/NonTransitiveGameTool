@@ -11,15 +11,18 @@ public class Item {
         this.code = node;
     }
 
-    public PTreeNode getNode() {
-        return code;
-    }
-
     public int getValA() {
         return valA;
     }
 
     public int getValB() {
         return valB;
+    }
+
+    public PTreeNode getNode() {
+        return code;
+    }
+    public void printItem(){
+        System.out.println("CompareA: " + valA + ", CompareB: " + valB + ", Nodestr:" + getNode().writeAsString());
     }
 }
