@@ -9,7 +9,7 @@ public class Main {
     public static void main(String[] args) throws InterruptedException {
         Scanner keyboard = new Scanner(System.in);
 
-        System.out.println("Enter word length between 3 and 20");
+        System.out.println("Enter word length between 3 and 12");
         int myintL = keyboard.nextInt();
         System.out.println(myintL);
         keyboard.nextLine();
