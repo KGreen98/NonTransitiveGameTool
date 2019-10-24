@@ -17,14 +17,16 @@ public class PTreeManip {
                 System.out.println(a.writeAsString());
                 if (n > 0) {
                     if (n < A.length()){
-                        addItem(A, B, a);
+                        if (!compareItem(A, B, a)){
+                            addItem(A, B, a);
+                        }
                         addPattern(a);
                     }
                     checkFullyResetHistory(A, B, a);
                     if (n >= A.length()) {
-
-                        treeCut(A, B, a);
                         compareItem(A, B, a);
+                        treeCut(A, B, a);
+                        checkFullyResetHistory(A, B, a);
                         //checkLoop(A.length(), a);
                     }
                 }
@@ -183,8 +185,11 @@ public class PTreeManip {
 
         //Set subA and NodeString to same length to compare.
         if (node.findLengthFromLeaf() < A.length()){
-            subA = A.substring(0, node.findLengthFromLeaf());
+
+            subA = A.substring(0, A.length()-1);
+            return 1 + compare(subA, node);
         }
+
         if (node.findLengthFromLeaf() > A.length()) {
             nodeString = nodeString.substring(nodeString.length() - A.length());
         }
@@ -236,39 +241,36 @@ public class PTreeManip {
         return a;
     }
 
-    public void compareItem(String A, String B, PTreeNode node){
+    public boolean compareItem(String A, String B, PTreeNode node){
         Item thisNode = createItem(A, B, node);
+        System.out.println("cItem");
         for(Item it: items){
             String wStr = getPrecedingString(A, node);
             while (wStr.length()>0) {
                 //System.out.println("    wStr:" + wStr + " it:" + it.getNode().writeAsString());
                 if (it.getNode().writeAsString().equals(wStr)) {
-                    //System.out.println("    wStr:" + wStr + " it:" + it.getNode().writeAsString());
+                    System.out.println("    wStr:" + wStr + " it:" + it.getNode().writeAsString());
                     if (it.getValA() == thisNode.getValA()) {
                         if (it.getValB() == thisNode.getValB()) {
                             System.out.println("Seems familiar:" + node.writeAsString() + " : " + it.getNode().writeAsString());
                             node.setDeadend(true);
                             node.setTerminalMark(new TreeMarking(9, it.getNode()));
+                            return true;
                         }
                     }
                 }
                 wStr = wStr.substring(1);
             }
         }
+        return false;
     }
 
-    //Returns the substring before last A length characters
-    //A = 011
-    //fullString = ABCDEFGH
-    //returns: ABCDE
     public String getPrecedingString(String A, PTreeNode node){
         String fullString = node.writeAsString();
-        return fullString.substring(0, fullString.length()-A.length()+1);
+        if (fullString.length() <= A.length()){
+            return fullString;
+        }
+        return fullString.substring(0, fullString.length()-A.length());
     }
-
-    //compare items with item on list
-    //iterate through items
-    //if items match, that is a loop, cut tree etc
-
 
 }
