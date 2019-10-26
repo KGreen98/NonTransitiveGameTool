@@ -6,7 +6,6 @@ import java.util.List;
 
 public class PTreeManip {
     //Fix for any length of tree as should work regardless of tree length
-    public ArrayList<String> patterns = new ArrayList<>();
     public ArrayList<Item> items = new ArrayList<Item>();
     public void run(String A, String B, PTreeNode root) {
 
@@ -15,79 +14,47 @@ public class PTreeManip {
         List<PTreeNode> list = getLeaves(root);
             for (PTreeNode a : list) {
                 System.out.println(a.writeAsString());
+                if (n == 0) {
+                    addItem(A, B, a);
+                }
                 if (n > 0) {
                     if (n < A.length()){
                         if (!compareItem(A, B, a)){
                             addItem(A, B, a);
                         }
-                        addPattern(a);
                     }
-                    checkFullyResetHistory(A, B, a);
+                    //checkFullyResetHistory(A, B, a);
                     if (n >= A.length()) {
                         compareItem(A, B, a);
                         treeCut(A, B, a);
-                        checkFullyResetHistory(A, B, a);
+                        //checkFullyResetHistory(A, B, a);
                         //checkLoop(A.length(), a);
                     }
                 }
             }
             manip.addTreeLayer(root);
+
+
         }
+        System.out.println();
         System.out.println("Analysing Tree");
         getEnds(root);
-
-    }
-
-    public void addPattern(PTreeNode node){
-        String word = node.writeAsString();
-        if (!patterns.contains(word)){
-            patterns.add(word);
-        }
-    }
-
-    //might be each or max length not sure
-    public void checkLoop(int maxLength, PTreeNode node){
-        String word = node.writeAsString();
-        String word2 = word.substring(0, word.length() - maxLength);
-        //System.out.println("str: " + word + "  substr: " + word2);
-        if (word2.length() % 2 == 1){
-            word2 = word2.substring(1);
-        }
-        if (word2.length() % 2 == 0 && word2.length()>0){
-            String word3 = word2.substring(0, word2.length()/2);
-            String word4 = word2.substring(word2.length()/2);
-//            System.out.println("Word 1: " + word);
-//            System.out.println("Word 2: " + word2);
-//            System.out.println("Word 3: " + word3);
-//            System.out.println("Word 4: " + word4);
-            if (word3.equals(word4)){
-                int revertDist = word2.length();
-                PTreeNode nodePropper = node;
-                System.out.println(revertDist);
-                for (int i = 0; i < revertDist; i++){
-                    nodePropper = nodePropper.getParent();
-                }
-                //todo look at XXXXAAA for any length X
-                System.out.println(node.writeAsString() + " is actually " + nodePropper.writeAsString() + "  deleting their children");
-                //nodePropper.setDeadend(true);
-                //nodePropper.removeChildren();
-                node.getParent().getLeftChild().setDeadend(true);
-                node.getParent().getLeftChild().setTerminalMark(new TreeMarking(3, nodePropper));
-                node.getParent().getRightChild().setDeadend(true);
-                node.getParent().getRightChild().setTerminalMark(new TreeMarking(3, nodePropper));
-                node.setDeadend(true);
-                //node.setDeadend(true);
-                //System.out.println("We've been here before");
-            }
-        }
-
-
-
+        System.out.println();
+        System.out.println("A: " + A);
+        System.out.println("B: " + B);
+        System.out.println();
+        System.out.println("Tree Values");
+        evaluateTreeValues(root);
+        System.out.println("-");
+        TreeEval teval = new TreeEval();
+        teval.Eval(root, items);
+        teval.printList();
+        teval.totalEval();
     }
 
     public void addChildren(PTreeNode parent) {
-        PTreeNode child0 = new PTreeNode(0, parent);
-        PTreeNode child1 = new PTreeNode(1, parent);
+        PTreeNode child0 = new PTreeNode("0", parent);
+        PTreeNode child1 = new PTreeNode("1", parent);
         parent.setLeftChild(child0);
         parent.setRightChild(child1);
     }
@@ -120,8 +87,6 @@ public class PTreeManip {
         }
         System.out.println("            Extending tree, " + leaves.size() + " Branches");
         System.out.println("____________________________________________________________________________________________");
-        System.out.println("____________________________________________________________________________________________");
-        System.out.println("____________________________________________________________________________________________");
     }
 
     public void treeCut(String A, String B, PTreeNode node){
@@ -131,19 +96,12 @@ public class PTreeManip {
             //checkLoop(A.length(), node);
             //to do something different if not a loop
             node.setDeadend(true);
-            node.setTerminalMark(new TreeMarking(0));
+            node.setTerminalMark(new TreeMarking(0, null));
             System.out.println("This node matches A, cutting off");
         }
-        //If node has 0 progress on A, consider reset history
-//        if (bpA == (A.length())){
-//            node.setDeadend(true);
-//            node.setTerminalMark(new TreeMarking(6));
-//            System.out.println("This node has nothing in common with A, cutting off");
-//        }
-        //If node equals B
         if (bpB == 0){
             node.setDeadend(true);
-            node.setTerminalMark(new TreeMarking(1));
+            node.setTerminalMark(new TreeMarking(1, null));
             System.out.println("This node matches B, cutting off");
         }
     }
@@ -167,7 +125,7 @@ public class PTreeManip {
         int bpB = compare(B, node);
         if ((bpA == node.findLengthFromLeaf()) && (bpB == node.findLengthFromLeaf())){
             node.setDeadend(true);
-            node.setTerminalMark(new TreeMarking(2));
+            node.setTerminalMark(new TreeMarking(2, null));
             System.out.println("No Progress made towards A or B, cutting off.");
         }
     }
@@ -177,7 +135,6 @@ public class PTreeManip {
         //If returns Length of A, no match.
         //If returns Length of A-1, 1 match.
         //Get total string from tree node up to root
-
         //Closer to 0 it is, the closer the string is to being a match
         String nodeString = node.writeAsString();
         //Most recent n in tree as String
@@ -185,7 +142,6 @@ public class PTreeManip {
 
         //Set subA and NodeString to same length to compare.
         if (node.findLengthFromLeaf() < A.length()){
-
             subA = A.substring(0, A.length()-1);
             return 1 + compare(subA, node);
         }
@@ -224,7 +180,6 @@ public class PTreeManip {
         for (PTreeNode a: getAllChildren(root)){
             if (!(a.getTerminalMark() == null)){
                 System.out.println(a.writeAsString());
-                a.getTerminalMark().PrintType();
             }
         }
     }
@@ -243,21 +198,23 @@ public class PTreeManip {
 
     public boolean compareItem(String A, String B, PTreeNode node){
         Item thisNode = createItem(A, B, node);
-        System.out.println("cItem");
         for(Item it: items){
             String wStr = getPrecedingString(A, node);
-            while (wStr.length()>0) {
+            while (wStr.length()>=0) {
                 //System.out.println("    wStr:" + wStr + " it:" + it.getNode().writeAsString());
                 if (it.getNode().writeAsString().equals(wStr)) {
-                    System.out.println("    wStr:" + wStr + " it:" + it.getNode().writeAsString());
+                    //System.out.println("    wStr:" + wStr + " it:" + it.getNode().writeAsString());
                     if (it.getValA() == thisNode.getValA()) {
                         if (it.getValB() == thisNode.getValB()) {
-                            System.out.println("Seems familiar:" + node.writeAsString() + " : " + it.getNode().writeAsString());
+                            System.out.println("Node " + node.writeAsString() + " is equivalent to:" + it.getNode().writeAsString() + ", cutting off");
                             node.setDeadend(true);
-                            node.setTerminalMark(new TreeMarking(9, it.getNode()));
+                            node.setTerminalMark(new TreeMarking(3, it.getNode()));
                             return true;
                         }
                     }
+                }
+                if (wStr.length() == 0){
+                    break;
                 }
                 wStr = wStr.substring(1);
             }
@@ -271,6 +228,17 @@ public class PTreeManip {
             return fullString;
         }
         return fullString.substring(0, fullString.length()-A.length());
+    }
+
+    public void evaluateTreeValues(PTreeNode root){
+        if (!root.isDeadend()) {
+            //System.out.println("Expanding " + root.writeAsString());
+            evaluateTreeValues(root.getLeftChild());
+            evaluateTreeValues(root.getRightChild());
+        }
+        else {
+            System.out.println("Node- " + root.writeAsString() + " evaluates to:" + root.nodeValue());
+        }
     }
 
 }

@@ -22,6 +22,7 @@ public class Item {
     public PTreeNode getNode() {
         return code;
     }
+
     public void printItem(){
         System.out.println("CompareA: " + valA + ", CompareB: " + valB + ", Nodestr:" + getNode().writeAsString());
     }

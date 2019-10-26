@@ -3,15 +3,14 @@ package PennysTree;
 import java.util.ArrayList;
 
 public class PTreeNode {
-    private int data;
+    private String data;
     private PTreeNode parent = null;
     private PTreeNode left;
     private PTreeNode right;
     private boolean deadend;
-
     private TreeMarking terminalMark;
 
-    public PTreeNode(int data, PTreeNode p) {
+    public PTreeNode(String data, PTreeNode p) {
         this.data = data;
         left = null;
         right = null;
@@ -20,7 +19,7 @@ public class PTreeNode {
         terminalMark = null;
     }
 
-    public int getValue(){
+    public String getValue(){
         return data;
     }
 
@@ -62,11 +61,6 @@ public class PTreeNode {
         right = node;
     }
 
-    public void removeChildren(){
-        setLeftChild(null);
-        setRightChild(null);
-    }
-
     public String writeAsString(){
         //returns branch as string up to root
         String str = "";
@@ -76,7 +70,18 @@ public class PTreeNode {
             str = str + b.getValue();
             b = b.getParent();
         }
-        str = new StringBuilder(str).reverse().toString();
+        if (str.length() > 0) {
+            str = new StringBuilder(str).reverse().toString();
+        }
+        return str;
+    }
+
+    public String writeAsStringWithRoot(){
+        //returns branch as string up to root
+        String str = writeAsString();
+        if (str.equals("")){
+            str = "root";
+        }
         return str;
     }
 
@@ -88,4 +93,27 @@ public class PTreeNode {
         this.terminalMark = terminalMark;
     }
 
+    public String nodeValue(){
+        if (!isDeadend()){
+            return "Not a deadend";
+        }
+        if (terminalMark.equals(null)){
+            return "Not marked as a terminal node";
+        }
+        if (terminalMark.getNodeType() == 0){
+            return "Node == A";
+        }
+        else if (terminalMark.getNodeType() == 1){
+            return "Node == B";
+        }
+        else if (terminalMark.getNodeType() == 2){
+            return "Remove me old complete reset";
+        }
+        else if (terminalMark.getNodeType() == 3){
+            return "Loop here:" + terminalMark.getEquivalentNode().writeAsString();
+        }
+        else{
+            return "ERROR";
+        }
+    }
 }
