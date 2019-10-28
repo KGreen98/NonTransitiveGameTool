@@ -1,5 +1,5 @@
 package PennysTree;
-
+//JSience Rational import
 import java.util.ArrayList;
 
 public class TreeEval {
@@ -9,9 +9,9 @@ public class TreeEval {
     //01|000 if loop, e 01
     ArrayList<String> lst = new ArrayList<>();
 
-    public void totalEval(){
+    public void totalEval(PTreeNode root){
         ArrayList<String[]> a = SplittedList();
-        analyseList(a);
+        analyseList(a, root);
     }
 
     public void Eval(PTreeNode node, ArrayList<Item> items){
@@ -27,8 +27,8 @@ public class TreeEval {
         }
         //maybe add non terminal nodes
         System.out.println(node.writeAsString() + " evals to product of lower nodes");
-        Eval(node.getLeftChild(), items);
-        Eval(node.getRightChild(), items);
+        Eval(node.getChild(0), items);
+        Eval(node.getChild(1), items);
     }
 
     public String EvalTerminalNonLoop(PTreeNode node){
@@ -61,12 +61,37 @@ public class TreeEval {
         return splist;
     }
 
-    public void analyseList(ArrayList<String[]> splist){
+    public void analyseList(ArrayList<String[]> splist, PTreeNode root){
+        System.out.println("Analysing Real List");
+        double r = 0;
+        double A = 0;
+        double B = 0;
         for(String[] s : splist){
             if (s[0].equals("A")){
-                return ;
+                A += 1/(Math.pow(2,s[1].length()));
+                System.out.println("+ " + 1/(Math.pow(2,s[1].length())));
             }
-
+            if (s[0].equals("B")){
+                System.out.println("// " + 1/(Math.pow(2,s[1].length())));
+            }
+            else {
+                if (s[0].equals("root")) {
+                    r += 1 / (Math.pow(2, s[1].length()));
+                }
+                else{
+                    A += 1/(Math.pow(2,s[1].length()+1));
+                }
+//                if (s[0].equals("root")){
+//                    s[0] = "";
+//                }
+//                PTreeManip m = new PTreeManip(10);
+//                PTreeNode eqN = m.getNodeByName(root, s[0]);
+// System.out.println("// " + 1/(Math.pow(2,s[1].length())) + "  : " + eqN.writeAsString().length());
+            }
         }
+        System.out.println("r: " + r);
+        System.out.println("A: " + A);
+        System.out.println("B: " + B);
+        System.out.println("Eval: " + A/(1-r));
     }
 }

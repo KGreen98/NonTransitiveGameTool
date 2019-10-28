@@ -1,15 +1,16 @@
 package PennysTree;
 
-import java.lang.reflect.Array;
 import java.util.ArrayList;
 import java.util.List;
 
 public class PTreeManip {
-    //Fix for any length of tree as should work regardless of tree length
     public ArrayList<Item> items = new ArrayList<Item>();
-    public void run(String A, String B, PTreeNode root) {
+    public int alphaSize = 2;
+    public PTreeManip(int alphabetSize) {
+        alphaSize = alphabetSize;
+    }
 
-        PTreeManip manip = new PTreeManip();
+    public void run(String A, String B, PTreeNode root) {
         for (int n=0; n<(A.length() * 2); n++){
         List<PTreeNode> list = getLeaves(root);
             for (PTreeNode a : list) {
@@ -23,23 +24,16 @@ public class PTreeManip {
                             addItem(A, B, a);
                         }
                     }
-                    //checkFullyResetHistory(A, B, a);
                     if (n >= A.length()) {
                         compareItem(A, B, a);
                         treeCut(A, B, a);
-                        //checkFullyResetHistory(A, B, a);
-                        //checkLoop(A.length(), a);
                     }
                 }
             }
-            manip.addTreeLayer(root);
-
-
+            addTreeLayer(root);
         }
         System.out.println();
         System.out.println("Analysing Tree");
-        getEnds(root);
-        System.out.println();
         System.out.println("A: " + A);
         System.out.println("B: " + B);
         System.out.println();
@@ -49,28 +43,47 @@ public class PTreeManip {
         TreeEval teval = new TreeEval();
         teval.Eval(root, items);
         teval.printList();
-        teval.totalEval();
+        teval.totalEval(root);
+        teval.analyseList(teval.SplittedList(), root);
+    }
+
+    public PTreeNode getNodeByName(PTreeNode node, String nodeString){
+        if (nodeCompareString(node, nodeString)){
+            return node;
+        }
+        ArrayList<PTreeNode> children = node.getChildren();
+        PTreeNode res = null;
+        for (int i = 0; res == null && i < children.size(); i++){
+            res = getNodeByName(children.get(i), nodeString);
+        }
+        return res;
+    }
+
+    public boolean nodeCompareString (PTreeNode node, String nodeString){
+        return node.writeAsString().equals(nodeString);
     }
 
     public void addChildren(PTreeNode parent) {
-        PTreeNode child0 = new PTreeNode("0", parent);
-        PTreeNode child1 = new PTreeNode("1", parent);
-        parent.setLeftChild(child0);
-        parent.setRightChild(child1);
+        for (Integer i = 0; i<alphaSize; i++) {
+            String data = i.toString();
+            PTreeNode child0 = new PTreeNode(data, parent);
+            parent.setChild(child0);
+        }
     }
 
     //Adds nodes with no children that are not marked as a deadend, to list of nodes
     public void checkLeaves(PTreeNode node, List<PTreeNode> list){
         if (!node.isDeadend()) {
-            if (node.getLeftChild() != null) {
-                checkLeaves(node.getLeftChild(), list);
-            }
-            if (node.getRightChild() != null) {
-                checkLeaves(node.getRightChild(), list);
-            }
-            if ((node.getLeftChild() == null) && (node.getRightChild() == null)) {
+            ArrayList<PTreeNode> children = node.getChildren();
+            if (!node.getChildren().isEmpty()){
+                for (PTreeNode child: node.getChildren()) {
+                    checkLeaves(child, list);
+                }
+            } else{
                 list.add(node);
             }
+
+
         }
     }
 
@@ -93,8 +106,6 @@ public class PTreeManip {
         int bpA = compare(A, node);
         int bpB = compare(B, node);
         if (bpA == 0){
-            //checkLoop(A.length(), node);
-            //to do something different if not a loop
             node.setDeadend(true);
             node.setTerminalMark(new TreeMarking(0, null));
             System.out.println("This node matches A, cutting off");
@@ -103,30 +114,6 @@ public class PTreeManip {
             node.setDeadend(true);
             node.setTerminalMark(new TreeMarking(1, null));
             System.out.println("This node matches B, cutting off");
-        }
-    }
-
-    public void treeCutStingChar(String A, String B, PTreeNode node){
-        int bpA = compare(A, node);
-        int bpB = compare(B, node);
-        if (bpA == (A.length() - 1)){
-            node.setDeadend(true);
-            System.out.println("This node has matches an initial branch, 1char long towards A");
-        }
-        if (bpB == (A.length() - 1)){
-            node.setDeadend(true);
-            System.out.println("This node has matches an initial branch, 1char long towards B");
-        }
-
-    }
-
-    public void checkFullyResetHistory(String A, String B, PTreeNode node){
-        int bpA = compare(A, node);
-        int bpB = compare(B, node);
-        if ((bpA == node.findLengthFromLeaf()) && (bpB == node.findLengthFromLeaf())){
-            node.setDeadend(true);
-            node.setTerminalMark(new TreeMarking(2, null));
-            System.out.println("No Progress made towards A or B, cutting off.");
         }
     }
 
@@ -167,21 +154,16 @@ public class PTreeManip {
     public ArrayList<PTreeNode> getAllChildren(PTreeNode node){
         ArrayList<PTreeNode> list = new ArrayList<PTreeNode>();
         list.add(node);
-        if (node.getLeftChild()!=null) {
-            list.addAll(getAllChildren(node.getLeftChild()));
-        }
-        if (node.getRightChild()!=null) {
-            list.addAll(getAllChildren(node.getRightChild()));
+        if (!node.getChildren().isEmpty()){
+            list.addAll(node.getChildren());
+//            if (node.getChild(0)!=null) {
+//                list.addAll(getAllChildren(node.getChild(0)));
+//            }
+//            if (node.getChild(1)!=null) {
+//                list.addAll(getAllChildren(node.getChild(1)));
+//            }
         }
         return list;
-    }
-
-    public void getEnds(PTreeNode root){
-        for (PTreeNode a: getAllChildren(root)){
-            if (!(a.getTerminalMark() == null)){
-                System.out.println(a.writeAsString());
-            }
-        }
     }
 
     public void addItem(String A, String B, PTreeNode node){
@@ -233,8 +215,9 @@ public class PTreeManip {
     public void evaluateTreeValues(PTreeNode root){
         if (!root.isDeadend()) {
             //System.out.println("Expanding " + root.writeAsString());
-            evaluateTreeValues(root.getLeftChild());
-            evaluateTreeValues(root.getRightChild());
+            for (PTreeNode child: root.getChildren()) {
+                evaluateTreeValues(child);
+            }
         }
         else {
             System.out.println("Node- " + root.writeAsString() + " evaluates to:" + root.nodeValue());

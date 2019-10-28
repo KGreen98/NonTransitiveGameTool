@@ -5,15 +5,13 @@ import java.util.ArrayList;
 public class PTreeNode {
     private String data;
     private PTreeNode parent = null;
-    private PTreeNode left;
-    private PTreeNode right;
-    private boolean deadend;
+    private ArrayList<PTreeNode> children = null;
     private TreeMarking terminalMark;
+    private boolean deadend;
 
     public PTreeNode(String data, PTreeNode p) {
         this.data = data;
-        left = null;
-        right = null;
+        children = new ArrayList<PTreeNode>();
         parent = p;
         deadend = false;
         terminalMark = null;
@@ -27,13 +25,21 @@ public class PTreeNode {
         return parent;
     }
 
-    public PTreeNode getRoot(){
-        PTreeNode node = this;
-        while (node.parent != null){
-            node = node.parent;
-        }
-        return node;
+    public ArrayList<PTreeNode> getChildren(){
+        return children;
     }
+
+    public PTreeNode getChild(int i){
+        return getChildren().get(i);
+    }
+//
+//    public PTreeNode getRoot(){
+//        PTreeNode node = this;
+//        while (node.parent != null){
+//            node = node.parent;
+//        }
+//        return node;
+//    }
 
     public int findLengthFromLeaf() {
         //length from leaf
@@ -46,19 +52,8 @@ public class PTreeNode {
         return length;
     }
 
-    public PTreeNode getLeftChild() {
-        return left;
-    }
-    public PTreeNode getRightChild() {
-        return right;
-    }
-    public boolean isDeadend() { return deadend; }
-    public void setDeadend(boolean deadend) { this.deadend = deadend; }
-    public void setLeftChild(PTreeNode node) {
-        left = node;
-    }
-    public void setRightChild(PTreeNode node) {
-        right = node;
+    public void setChild(PTreeNode node) {
+        children.add(node);
     }
 
     public String writeAsString(){
@@ -106,14 +101,19 @@ public class PTreeNode {
         else if (terminalMark.getNodeType() == 1){
             return "Node == B";
         }
-        else if (terminalMark.getNodeType() == 2){
-            return "Remove me old complete reset";
-        }
         else if (terminalMark.getNodeType() == 3){
             return "Loop here:" + terminalMark.getEquivalentNode().writeAsString();
         }
         else{
             return "ERROR";
         }
+    }
+
+    public boolean isDeadend() {
+        return deadend;
+    }
+
+    public void setDeadend(boolean deadend) {
+        this.deadend = deadend;
     }
 }
