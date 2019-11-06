@@ -41,10 +41,12 @@ public class PTreeManip {
         evaluateTreeValues(root);
         System.out.println("-");
         TreeEval teval = new TreeEval();
-        teval.Eval(root, items);
-        teval.printList();
-        teval.totalEval(root);
-        teval.analyseList(teval.SplittedList(), root);
+        //teval.Eval(root, items);
+        teval.NewEval(root, root, A, B);
+        teval.FinalEval();
+//        teval.printList();
+//        teval.totalEval(root);
+//        teval.analyseList(teval.SplittedList(), root);
     }
 
     public PTreeNode getNodeByName(PTreeNode node, String nodeString){
@@ -222,6 +224,50 @@ public class PTreeManip {
         else {
             System.out.println("Node- " + root.writeAsString() + " evaluates to:" + root.nodeValue());
         }
+    }
+
+    public double prob = 0;
+    public double self = 0;
+    public double rot = 0;
+
+    public double[] evalLoopPA(PTreeNode root, PTreeNode start, PTreeNode node, String A, String B){
+        System.out.println("Eval Loop:" + node.writeAsString());
+        int sub = start.findLengthFromLeaf();
+        System.out.println("Leaf LENGTH" + sub);
+        System.out.println(node.getChildren().size());
+        for (PTreeNode child: node.getChildren()) {
+            if (child.isDeadend()){
+                if (child.writeAsString().equals(A)){
+                    System.out.println("    " + child.writeAsString() + " A");
+                    prob += 1/Math.pow(2, (child.findLengthFromLeaf() - sub));
+                }
+                else if (child.writeAsString().equals(B)){
+                    System.out.println("    " + child.writeAsString() + " B");
+                }
+                else if (child.equivNode().equals(start)){
+                    System.out.println("    " + child.writeAsString() + " node equals start");
+                    self += 1/Math.pow(2, (child.findLengthFromLeaf() - sub));
+                }
+                else if (child.equivNode().equals(root)){
+                    System.out.println("    " + child.writeAsString() + " node equals root");
+                    rot += 1/Math.pow(2, (child.findLengthFromLeaf() - sub));
+                }
+                else{
+                    System.out.println("    " + child.writeAsString() + " node equals new root");
+
+                }
+            }
+            else {
+                evalLoopPA(root, start, node.getChild(0), A, B);
+                evalLoopPA(root, start, node.getChild(1), A, B);
+            }
+        }
+
+        double [] dArray = new double[3];
+        dArray[0] = prob;
+        dArray[1] = self;
+        dArray[2] = rot;
+        return dArray;
     }
 
 }

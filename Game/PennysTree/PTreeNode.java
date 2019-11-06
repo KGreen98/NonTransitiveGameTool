@@ -109,6 +109,21 @@ public class PTreeNode {
         }
     }
 
+    public int nodeValueNo(){
+        if (!isDeadend()){
+            return -2;
+        }
+        if (terminalMark.equals(null)){
+            return -1;
+        }
+        return terminalMark.getNodeType();
+    }
+
+    //only call if nodeValue == 3
+    public PTreeNode equivNode(){
+        return terminalMark.getEquivalentNode();
+    }
+
     public boolean isDeadend() {
         return deadend;
     }

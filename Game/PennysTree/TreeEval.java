@@ -10,8 +10,60 @@ public class TreeEval {
     ArrayList<String> lst = new ArrayList<>();
 
     public void totalEval(PTreeNode root){
-        ArrayList<String[]> a = SplittedList();
-        analyseList(a, root);
+//        ArrayList<String[]> a = SplittedList();
+//        analyseList(a, root);
+    }
+    public double PA = 0;
+    public double prob = 0;
+
+    public void FinalEval(){
+        System.out.println("_______________________");
+        System.out.println("PA: " + PA);
+        System.out.println("Prob: " + prob);
+        PA = 1 - PA;
+        double total = prob / PA;
+        System.out.println("Total: " + total);
+    }
+
+    public void NewEval(PTreeNode root, PTreeNode node, String A, String B){
+        if (node.isDeadend()){
+            if ((node.nodeValueNo() == 0)){
+                System.out.println("Length from leaf: " + node.writeAsString() + ":" + node.findLengthFromLeaf());
+                System.out.println(1/Math.pow(2, node.findLengthFromLeaf()));
+                prob += 1/Math.pow(2, node.findLengthFromLeaf());
+            }
+            if ((node.nodeValueNo() == 3)){
+                if (node.equivNode().equals(root)){
+                    System.out.println("Length from leaf: " + node.writeAsString() + ":" + node.findLengthFromLeaf());
+                    System.out.println(1/Math.pow(2, node.findLengthFromLeaf()));
+                    PA += 1/Math.pow(2, node.findLengthFromLeaf());
+                }
+                //Eval loop nodes
+                else{
+                    //todo consider root loops
+                    System.out.println("Loop time" + node.writeAsString());
+                    PTreeManip tm = new PTreeManip(2);
+                    double[] dA = tm.evalLoopPA(root, node.equivNode(), node.equivNode(), A, B);
+                    System.out.println("DA[0] prob" + dA[0]);
+                    System.out.println("DA[1] self" + dA[1]);
+                    System.out.println("DA[2] rot" + dA[2]);
+                    double tempprob = dA[0] / (1 - dA[1]);
+                    double tempPA = dA[2] / (1 - dA[1]);
+
+                    double multi = 1/Math.pow(2, node.findLengthFromLeaf());
+                    double valP = tempprob * multi;
+                    //System.out.println(valP);
+                    prob += tempprob * multi;
+                    double valPA = tempprob * multi;
+                    //System.out.println(valPA);
+                    PA += tempPA * multi;
+                }
+            }
+            return;
+        }
+        //todo fix for any char set
+        NewEval(root, node.getChild(0), A, B);
+        NewEval(root, node.getChild(1), A, B);
     }
 
     public void Eval(PTreeNode node, ArrayList<Item> items){
@@ -76,17 +128,13 @@ public class TreeEval {
             }
             else {
                 if (s[0].equals("root")) {
+                    System.out.println("root");
                     r += 1 / (Math.pow(2, s[1].length()));
                 }
                 else{
+                    System.out.println(s[0]);
                     A += 1/(Math.pow(2,s[1].length()+1));
                 }
-//                if (s[0].equals("root")){
-//                    s[0] = "";
-//                }
-//                PTreeManip m = new PTreeManip(10);
-//                PTreeNode eqN = m.getNodeByName(root, s[0]);
-// System.out.println("// " + 1/(Math.pow(2,s[1].length())) + "  : " + eqN.writeAsString().length());
             }
         }
         System.out.println("r: " + r);

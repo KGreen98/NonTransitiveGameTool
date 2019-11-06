@@ -2,8 +2,8 @@ package PennysGame;
 
 import java.util.*;
 
-public class Graph {
-    public Graph(){
+public class Graph1 {
+    public Graph1(){
     }
 
     public void method(int characterLength, int alphabetSize) {

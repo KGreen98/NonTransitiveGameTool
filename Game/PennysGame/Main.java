@@ -1,7 +1,5 @@
 package PennysGame;
 
-import PennysGame.Pennys;
-
 import java.util.Scanner;
 
 public class Main {
@@ -27,7 +25,7 @@ public class Main {
         System.out.println("Player 1: " + p.getP1());
         System.out.println("Player 2: " + p.getP2());
 
-        Graph g = new Graph();
+        Graph1 g = new Graph1();
         g.method(1,1);
     }
 }
