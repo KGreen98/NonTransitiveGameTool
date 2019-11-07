@@ -5,8 +5,6 @@ public class Main {
         GraphBuilder gb = new GraphBuilder();
         AdjMatrixConstructor a = new AdjMatrixConstructor();
         a.printMatrix();
-        a.recurse(0);
-        a.depthFirst(0, 3);
     }
 }
 
