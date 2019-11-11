@@ -9,7 +9,7 @@ public class GraphBuilder {
     public ArrayList<List<String>> edgeList = new ArrayList<>();
     public ArrayList<String> nodeList = new ArrayList<>();
     public String A = "001";
-    public String B = "110";
+    public String B = "010";
     Queue<String> q = new LinkedList<>();
 
     public GraphBuilder(){
@@ -31,6 +31,15 @@ public class GraphBuilder {
         return nodeList;
     }
 
+    public int getAIndex(){
+        for (int i = 0; i < nodeList.size(); i++) {
+            if (nodeList.get(i).equals(A)){
+                return i;
+            }
+        }
+        return -1;
+    }
+
     //String compare, if string is equivalent to existing node
     public void stringComp(String a){
         Integer cmpA = compare(A, a);
@@ -43,7 +52,7 @@ public class GraphBuilder {
                 int nodecmpA = compare(A, node);
                 int nodecmpB = compare(B, node);
                 if (cmpA.equals(nodecmpA) && cmpB.equals(nodecmpB)) {
-                    System.out.println("cutting off " + a);
+                    //System.out.println("cutting off " + a);
                     List<String> l = new ArrayList<String>();
                     String sub = a.substring(0, a.length() - 1);
                     l.add(sub);
@@ -60,11 +69,11 @@ public class GraphBuilder {
         }
         nodeList.add(a);
         if (cmpA == 0){
-            System.out.println("A" + a);
+            //System.out.println("A" + a);
             return;
         }
         if (cmpB == 0){
-            System.out.println("B" + a);
+            //System.out.println("B" + a);
             return;
         }
         String ay = a;
