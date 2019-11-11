@@ -8,8 +8,8 @@ import java.util.Queue;
 public class GraphBuilder {
     public ArrayList<List<String>> edgeList = new ArrayList<>();
     public ArrayList<String> nodeList = new ArrayList<>();
-    public String A = "001";
-    public String B = "010";
+    public String A = "000";
+    public String B = "111";
     Queue<String> q = new LinkedList<>();
 
     public GraphBuilder(){

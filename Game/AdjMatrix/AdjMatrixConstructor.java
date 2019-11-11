@@ -2,6 +2,7 @@ package AdjMatrix;
 
 import sun.invoke.empty.Empty;
 
+import java.sql.SQLOutput;
 import java.util.*;
 
 public class AdjMatrixConstructor {
@@ -61,8 +62,6 @@ public class AdjMatrixConstructor {
 
     public void search(int start, int end){
         System.out.println(start);
-        completedPaths.clear();
-        completedLoops.clear();
         ArrayList<ArrayList<Integer>> openPaths = new ArrayList<>();
         ArrayList<Integer> startPath = new ArrayList<>();
         startPath.add(start);
@@ -130,7 +129,7 @@ public class AdjMatrixConstructor {
                 }
             }
         }
-        System.out.println("Important Nodes:" + nodesOfInterest);
+        //System.out.println("Important Nodes:" + nodesOfInterest);
 
         //loops portion
         ArrayList<ArrayList<Integer>> loops = completedLoops;
@@ -151,18 +150,78 @@ public class AdjMatrixConstructor {
         }
         System.out.println("Important Looping nodes:" + importantLoops);
 
+        for (ArrayList<Integer> loopPaths: completedLoops) {
+            Collections.reverse(loopPaths);
+        }
+        pathFN(directAPaths, importantLoops);
+    }
 
-        for (Integer l: importantLoops) {
-            ArrayList<ArrayList<Integer>> nodeLoops = new ArrayList<>();
-            //int nodeVal = importantLoops.get(l);
-            for (ArrayList<Integer> cL: completedLoops) {
-                if (finalNode(cL).equals(l)){
-                    nodeLoops.add(cL);
+    public int differenceToEnd(ArrayList<Integer> directAPath, Integer loop){
+        for (int i = 0; i < directAPath.size(); i++) {
+            if (directAPath.get(i).equals(loop)){
+                int value = directAPath.size() - i - 1;
+                System.out.println("    " + value);
+                return value;
+            }
+        }
+        return -1;
+    }
+
+    public int differenceToStart(ArrayList<Integer> directAPath, Integer loop){
+        for (int i = 0; i < directAPath.size(); i++) {
+            if (directAPath.get(i).equals(loop)){
+                int value = i;
+                System.out.println("    " + value);
+                return value;
+            }
+
+        }
+        return -1000;
+    }
+
+    public void pathFN(ArrayList<ArrayList<Integer>> directAPaths, ArrayList<Integer> importantLoops){
+        HashMap<Integer, Double> evalMap = new HashMap<Integer, Double>();
+        int PathsNo = directAPaths.size();
+        System.out.println(PathsNo);
+        for (int i = 0; i<directAPaths.size(); i++) {
+            ArrayList<Integer> path = directAPaths.get(i);
+            System.out.println("Path: " + path);
+
+            for (int j = path.size()-1; j >= 0; j--) {
+                if (importantLoops.contains(path.get(j))){
+                    System.out.println(":::" + path.get(j));
+                    double loop = loopFN(completedLoops, directAPaths, path.get(j));
+                    int start = differenceToStart(directAPaths.get(i), j);
+                    int end = differenceToEnd(directAPaths.get(i), j);
+                    double sFraction = 1/(Math.pow(2, start));
+                    double eFraction = 1/(Math.pow(2, end));
+                    System.out.println("LoopEval " + loop);
+                    System.out.println("startFraction " + sFraction);
+                    System.out.println("endFraction " + eFraction);
+
+                    double totalEval = (eFraction)/(1 - loop);
+                    System.out.println("TotalEval: " + totalEval);
+                    evalMap.put(j, totalEval);
                 }
             }
-            analyseNodeLoops(l, nodeLoops);
-            //analyseNodeLoop(nodeVal, nodeLoops);
         }
+    }
+
+    public double loopFN(ArrayList<ArrayList<Integer>> completedLoops, ArrayList<ArrayList<Integer>> directAPaths, Integer loopNode){
+        System.out.println("LoopFN: " + loopNode);
+        double self = 0;
+        for (ArrayList<Integer> loopPaths: completedLoops) {
+            if (loopPaths.get(0).equals(loopNode)){
+                System.out.print(loopPaths);
+                for(int i = 1; i < loopPaths.size(); i++){
+                    if (loopPaths.get(i).equals(loopNode)){
+                        self += 1/Math.pow(2, i);
+                    }
+                }
+            }
+        }
+        System.out.println("Self: " + self);
+        return self;
     }
 
     public void analyseNodeLoops(Integer l, ArrayList<ArrayList<Integer>> nodeLoops){
@@ -182,20 +241,6 @@ public class AdjMatrixConstructor {
         System.out.println(nodeLoops);
         System.out.println(total);
     }
-
-    public void analyseNodeLoop(Integer l, ArrayList<ArrayList<Integer>> nodeLoops){
-        System.out.println("Analyse NodeLoop");
-        System.out.println(l);
-        double total = 0;
-        for (ArrayList<Integer>loop: nodeLoops) {
-            for (int i = 0; i < loop.size(); i++){
-                search(loop.get(i), 0);
-            }
-        }
-        System.out.println(nodeLoops);
-        System.out.println(total);
-    }
-
 
     public void printMatrix(){
         System.out.println();
