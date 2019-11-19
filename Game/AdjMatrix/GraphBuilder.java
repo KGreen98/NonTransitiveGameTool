@@ -8,19 +8,57 @@ import java.util.Queue;
 public class GraphBuilder {
     public ArrayList<List<String>> edgeList = new ArrayList<>();
     public ArrayList<String> nodeList = new ArrayList<>();
-    public String A = "000";
-    public String B = "111";
+    public ArrayList<String> allNodeList = new ArrayList<>();
+    public String A;
+    public String B;
     Queue<String> q = new LinkedList<>();
 
-    public GraphBuilder(){
+    public GraphBuilder(String InputA, String InputB, int sequenceLength, int characterSetSize){
         String a = "";
-        //nodeList.add(a);
+        A = InputA;
+        B = InputB;
+        System.out.println("Getting all nodes");
+        allNodeList = getAllNodes(sequenceLength, characterSetSize);
+        System.out.println("All Nodes: " + allNodeList);
         q.add(a);
         while (!q.isEmpty()){
             stringComp(q.poll());
         }
         System.out.println(nodeList);
-        System.out.println(edgeList);
+        System.out.println("Edges : " + edgeList);
+    }
+
+    //get list of all possible nodes given character set and sequence length (["", "0", "1", "00", "01", "10"...])
+    public ArrayList<String> getAllNodes(int sequenceLength, int characterSetSize){
+        ArrayList<String> allNodesList = new ArrayList<>();
+        Queue<String> q = new LinkedList<>();
+        String s = "";
+        q.add(s);
+        while (q.size() > 0){
+            String head = q.poll();
+            if (head.length() < sequenceLength) {
+                ArrayList<String> nextNodes = getNextNodes(head, sequenceLength, characterSetSize);
+                for (String node: nextNodes) {
+                    q.add(node);
+                }
+            }
+            allNodesList.add(head);
+        }
+        return allNodesList;
+    }
+
+    //returns list of next nodes from a given node (00 -> [000, 001])
+    public ArrayList<String> getNextNodes(String nodeString, int sequenceLength, int characterSetSize){
+        ArrayList<String> nextNodes = new ArrayList<>();
+        for (Integer i = 0; i < characterSetSize; i++){
+            String newnode = nodeString.concat(i.toString());
+            nextNodes.add(newnode);
+        }
+        return nextNodes;
+    }
+
+    public ArrayList<String> getAllNodeList() {
+        return allNodeList;
     }
 
     public ArrayList<List<String>> getEdgeList() {
@@ -44,7 +82,6 @@ public class GraphBuilder {
     public void stringComp(String a){
         Integer cmpA = compare(A, a);
         Integer cmpB = compare(B, a);
-
         //check all current nodes, if node is equivalent to existing node
         //add edge from previous node to equivalent node and return
         if (a.length() > 0) {
@@ -68,12 +105,7 @@ public class GraphBuilder {
             edgeList.add(l);
         }
         nodeList.add(a);
-        if (cmpA == 0){
-            //System.out.println("A" + a);
-            return;
-        }
-        if (cmpB == 0){
-            //System.out.println("B" + a);
+        if (cmpA == 0 || cmpB == 0){
             return;
         }
         String ay = a;
@@ -94,9 +126,9 @@ public class GraphBuilder {
             return 1 + compare(subA, a);
         }
 
-        if (a.length() > A.length()) {
-            nodeString = nodeString.substring(nodeString.length() - A.length());
-        }
+//        if (a.length() > A.length()) {
+//            nodeString = nodeString.substring(nodeString.length() - A.length());
+//        }
 
         int maxCount = 0;
         while (subA.length()>=0) {
