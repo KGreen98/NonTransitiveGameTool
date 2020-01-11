@@ -1,4 +1,5 @@
 package AdjMatrix;
+import org.apache.commons.math3.linear.*;
 
 public class LinearEquations {
 

@@ -1,9 +1,10 @@
 package AdjMatrix;
 
 public class Main {
-    public static String A = "000";
-    public static String B = "101";
+    public static String A = "101";
+    public static String B = "000";
     public static void main(String[] args) {
+
         AdjMatrixConstructor a = new AdjMatrixConstructor(A, B);
         System.out.println();
         System.out.println("Linear Equation test");

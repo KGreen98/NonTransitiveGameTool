@@ -1,4 +1,6 @@
 package AdjMatrix;
+import org.apache.commons.math3.linear.*;
+
 import java.util.*;
 
 public class AdjMatrixConstructor {
@@ -7,23 +9,28 @@ public class AdjMatrixConstructor {
 
     public ArrayList<List<String>> edges;
     public ArrayList<String> allNodes;
-    public int[][] matrix;
+    public double[][] matrix;
     public int indexA;
 
     public ArrayList<ArrayList<Integer>> completedPaths = new ArrayList<>();
     public ArrayList<ArrayList<Integer>> completedLoops = new ArrayList<>();
 
+    public ArrayList<ArrayList<Integer>> eqnBuilder = new ArrayList<ArrayList<Integer>>();
+    public ArrayList<Integer> nodesList = new ArrayList<>();
+    public double[][] coefficients;
+    public double[] constants;
+
     public AdjMatrixConstructor(String InputA, String InputB){
         A = InputA;
         B = InputB;
-        GraphBuilder gb = new GraphBuilder(A, B, 3, 5);
+        GraphBuilder gb = new GraphBuilder(A, B, 3, 2);
 
         edges = gb.getEdgeList();
         allNodes = gb.getAllNodeList();
         indexA = findNodePosition(A);
 
         int vertex = allNodes.size();
-        matrix = new int[vertex][vertex];
+        matrix = new double[vertex][vertex];
         build();
         printMatrix();
         printEdges();
@@ -32,7 +39,102 @@ public class AdjMatrixConstructor {
         search(0, indexA);
         System.out.println("/-/-/");
         analyseLists(indexA, 0);
+        System.out.println("Matrix traversal");
+        matrixTraversal();
     }
+
+    public void matrixTraversal(){
+        ArrayList<Integer>ListOfVisitedVariables = new ArrayList<Integer>();
+        Queue<Integer> VariablesList = new LinkedList<>();
+
+        VariablesList.add(0);
+        while (!VariablesList.isEmpty()){
+            Integer node = VariablesList.peek();
+            ArrayList<Integer> links = nextNodes(node);
+            System.out.println(allNodes.get(node) + "|" + node + ":" + links);
+            ArrayList<Integer> nodeLinks = new ArrayList<>();
+            nodeLinks.add(node);
+            nodeLinks.addAll(links);
+            eqnBuilder.add(nodeLinks);
+            for (int i: links) {
+                if (!VariablesList.contains(i) && !ListOfVisitedVariables.contains(i)){
+                    VariablesList.add(i);
+                }
+            }
+            VariablesList.remove();
+            ListOfVisitedVariables.add(node);
+        }
+
+        System.out.println("VisitedVar: " + ListOfVisitedVariables);
+        nodesList.addAll(ListOfVisitedVariables);
+        System.out.println(nodesList);
+
+        eqnBuilderAnalyser();
+    }
+
+    public int findIndex(int val){
+        for (int i = 0; i < nodesList.size(); i++) {
+            if (val == nodesList.get(i)) {
+                return i;
+            }
+        }
+        return -1;
+    }
+
+    public void eqnBuilderAnalyser(){
+        coefficientsBuilder(eqnBuilder.size());
+        for (int i = 0; i < eqnBuilder.size(); i++) {
+            ArrayList<Integer> links = eqnBuilder.get(i);
+            int node = links.get(0);
+            if (allNodes.get(node).equals(A)){
+                constantsBuilder(eqnBuilder.size(), i);
+            }
+            System.out.println(links);
+            for (int j = 1; j < links.size(); j++) {
+                int index = findIndex(links.get(j));
+                //TODO fix for more vals
+                coefficients[i][index] += -0.5;
+            }
+        }
+        coefficientsPrinter();
+        Math3Linears(coefficients, constants);
+    }
+
+    public void coefficientsBuilder(int size){
+        coefficients = new double[size][size];
+        for (int i = 0; i < size; i++){
+            Arrays.fill(coefficients[i], 0);
+            coefficients[i][i] = 1;
+        }
+    }
+
+    public void coefficientsPrinter(){
+        System.out.println("Coefficients printer");
+        int size = coefficients.length;
+        for (int i = 0; i < size; i++){
+            System.out.println(Arrays.toString(coefficients[i]));
+        }
+    }
+
+    public void constantsBuilder(int size, int index){
+        System.out.println("Constants builder");
+        constants = new double[size];
+        Arrays.fill(constants, 0);
+        constants[index] = 1;
+        System.out.println(Arrays.toString(constants));
+    }
+
+    public void Math3Linears(double[][] coeff, double[] consta){
+        RealMatrix coefficients = new Array2DRowRealMatrix(coeff,false);
+        DecompositionSolver solver = new LUDecomposition(coefficients).getSolver();
+        RealVector constants = new ArrayRealVector(consta, false);
+        RealVector solution = solver.solve(constants);
+
+        System.out.println("P(A):" + solution.getEntry(0));
+        System.out.println();
+    }
+
+    //______________________________
 
     public int findNodePosition(String a){
         for (int i = 0; i < allNodes.size(); i++) {
@@ -197,7 +299,7 @@ public class AdjMatrixConstructor {
             }
         }
         System.out.println("Important Looping nodes:" + importantLoopNodes);
-        simpleEval(directAPaths, importantLoopNodes);
+        //simpleEval(directAPaths, importantLoopNodes);
 //        for (ArrayList<Integer> loopPaths: completedLoops) {
 //            Collections.reverse(loopPaths);
 //        }
@@ -345,6 +447,7 @@ public class AdjMatrixConstructor {
             System.out.println();
         }
         System.out.println("");
+        Math3Linears l = new Math3Linears(matrix);
     }
 
     public void printEdges() {
