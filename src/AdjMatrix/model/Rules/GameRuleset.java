@@ -3,6 +3,7 @@ package AdjMatrix.model.Rules;
 import java.util.ArrayList;
 
 public class GameRuleset {
+
     private int base;
     private int denominator;
     private ArrayList<Rolls> rolls = new ArrayList<>();
@@ -39,6 +40,17 @@ public class GameRuleset {
             set[index] = rolls.get(index).getCharacter();
         }
         return set;
+    }
+
+    public int getRolledIndex(int face){
+        int current = 0;
+        for (int i = 0; i < rolls.size(); i++) {
+            current += rolls.get(i).getOdds();
+            if (face < current){
+                return i;
+            }
+        }
+        return 0;
     }
 
     public int getBase() {

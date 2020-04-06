@@ -4,7 +4,6 @@ import AdjMatrix.model.Model;
 
 import javax.swing.*;
 import java.awt.*;
-import java.awt.font.FontRenderContext;
 
 public class View extends JFrame {
     private Model model;
@@ -13,9 +12,7 @@ public class View extends JFrame {
     public GameBoard gameBoard = new GameBoard();
     public JPanel game;
     public SpreadsheetBoard spreadsheetBoard;
-    public JPanel spreadsheet;
     public HelpBoard helpBoard = new HelpBoard();
-    public JPanel help;
     public RulesDisplayBoard rulesDisplay;
 
     public View(Model model) {
@@ -33,17 +30,14 @@ public class View extends JFrame {
         JMenu fileMenu = new JMenu("File");
         fileMenu.setFocusable(false);
 
-        MenuBarListener menuListener = new MenuBarListener(model);
+        MenuBarListener menuListener = new MenuBarListener(model, this);
 
-        JMenuItem saveRules = new JMenuItem("Save Rules");
         JMenuItem loadRules = new JMenuItem("Reset Rules");
         JMenuItem quit = new JMenuItem("Quit");
 
-        saveRules.addActionListener(menuListener);
         loadRules.addActionListener(menuListener);
         quit.addActionListener(menuListener);
 
-        fileMenu.add(saveRules);
         fileMenu.addSeparator();
         fileMenu.add(loadRules);
         fileMenu.addSeparator();
@@ -52,8 +46,8 @@ public class View extends JFrame {
         this.setJMenuBar(menuBar);
 
         JPanel jf = new JPanel(new BorderLayout());
-        JLabel title = new JLabel("Penney's Game", SwingConstants.CENTER);
-        title.setFont(new Font("serif", Font.PLAIN, 32));
+        JLabel title = new JLabel("Penney's Game Probabilty Calculator", SwingConstants.CENTER);
+        title.setFont(new Font("serif", Font.PLAIN, 24));
 
         JTabbedPane jt = new JTabbedPane();
         jt.add("Set Rules", rules);

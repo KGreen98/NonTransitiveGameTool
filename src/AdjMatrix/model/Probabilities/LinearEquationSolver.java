@@ -10,7 +10,6 @@ public class LinearEquationSolver {
     public LinearEquationSolver(RationalNumber[][] coefficientsRational, RationalNumber[] constantsRational) {
         coefficients = coefficientsRational;
         constants = constantsRational;
-
     }
 
     public RationalNumber rationalMatrix() {

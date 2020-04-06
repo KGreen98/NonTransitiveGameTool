@@ -1,10 +1,11 @@
 package AdjMatrix.model.GameSimulation;
 
-public class GameData {
+public class GameResultData {
     private int winner;
     private int rolls;
     private String winningString;
-    public GameData(int winningPLayer, int rollCount, String sequence) {
+
+    public GameResultData(int winningPLayer, int rollCount, String sequence) {
         winner = winningPLayer;
         rolls = rollCount;
         winningString = sequence;

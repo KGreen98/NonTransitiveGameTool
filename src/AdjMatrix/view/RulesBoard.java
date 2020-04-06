@@ -27,14 +27,7 @@ public class RulesBoard extends JPanel {
 
     public RulesBoard(Model model) {
         getAllRulesPanels().setPreferredSize(new Dimension(480,350));
-        GameRuleset gRules = model.getRulesGame();
-        PlayerRuleset aRules = model.getRulesA();
-        PlayerRuleset bRules = model.getRulesB();
-        gameRulesTextField.setText(model.getGameRulesAsUserInput());
-        spinnerLenA.setValue(aRules.getLength());
-        spinnerWordsA.setValue(aRules.getWordCount());
-        spinnerLenB.setValue(bRules.getLength());
-        spinnerWordsB.setValue(bRules.getWordCount());
+        update(model);
 
         TemplateGamesListener tgl = new TemplateGamesListener(this);
         fairCoinButton.addActionListener(tgl);
@@ -45,6 +38,17 @@ public class RulesBoard extends JPanel {
         rouletteWheelUSButton.addActionListener(tgl);
         unfair6SidedDieButton.addActionListener(tgl);
         diceTotalsButton.addActionListener(tgl);
+    }
+
+    public void update(Model model){
+        GameRuleset gRules = model.getRulesGame();
+        PlayerRuleset aRules = model.getRulesA();
+        PlayerRuleset bRules = model.getRulesB();
+        gameRulesTextField.setText(model.getGameRulesAsUserInput());
+        spinnerLenA.setValue(aRules.getLength());
+        spinnerWordsA.setValue(aRules.getWordCount());
+        spinnerLenB.setValue(bRules.getLength());
+        spinnerWordsB.setValue(bRules.getWordCount());
     }
 
     public JPanel getAllRulesPanels() {
@@ -90,4 +94,6 @@ public class RulesBoard extends JPanel {
     public void setWordsB(int i){
         spinnerWordsB.setValue(i);
     }
+
+
 }

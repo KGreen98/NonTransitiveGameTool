@@ -2,7 +2,7 @@ package AdjMatrix.model.Probabilities;
 
 import AdjMatrix.model.Rules.GameRuleset;
 import AdjMatrix.model.Rules.PlayerRuleset;
-import AdjMatrix.model.Rules.TotalAphabet;
+import AdjMatrix.model.Rules.TotalAlphabet;
 import org.ojalgo.scalar.RationalNumber;
 import org.apache.commons.collections4.CollectionUtils;
 import java.util.ArrayList;
@@ -17,8 +17,8 @@ public class FindBestMove {
     }
 
     public ArrayList<String> findBestChoiceB(ArrayList<String> InputA){
-        TotalAphabet totalAphabet = new TotalAphabet();
-        set = totalAphabet.getAll(gr,prB);
+        TotalAlphabet totalAphabet = new TotalAlphabet();
+        set = totalAphabet.allPossibleInputs(gr, prB);
         RationalNumber min = RationalNumber.MIN_VALUE;
         ArrayList<String> bestWord = new ArrayList<>();
         for (ArrayList<String> InputB: set) {
@@ -31,7 +31,6 @@ public class FindBestMove {
                 }
             }
         }
-        System.out.println("Best option for B:" + bestWord + " with prob " + min);
         return bestWord;
     }
 }

@@ -4,32 +4,27 @@ import AdjMatrix.model.Rules.GameRuleset;
 
 import java.util.ArrayList;
 
-public class PenneysGameMulti {
+public class GameSimulator {
     private ArrayList<String> inputA;
     private ArrayList<String> inputB;
     private GameRuleset gr;
-
-    private int base;
     private int maxLength;
 
-    public PenneysGameMulti(ArrayList<String> a, ArrayList<String> b, GameRuleset gameRuleset) {
+    public GameSimulator(ArrayList<String> a, ArrayList<String> b, GameRuleset gameRuleset) {
         inputA = a;
         inputB = b;
         gr = gameRuleset;
         maxLength = maxLength(combineLists());
-
-        //TODO fix for multiratios
-        base = gr.getBase();
     }
 
-    public ArrayList<String> combineLists(){
+    private ArrayList<String> combineLists(){
         ArrayList<String> allInputs = new ArrayList<String>();
         allInputs.addAll(inputA);
         allInputs.addAll(inputB);
         return allInputs;
     }
 
-    public int maxLength(ArrayList<String> allInputs){
+    private int maxLength(ArrayList<String> allInputs){
         int max = 0;
         for (String input: allInputs) {
             if (input.length()>max){
@@ -39,7 +34,7 @@ public class PenneysGameMulti {
         return max;
     }
 
-    public GameData runGameSim() {
+    public GameResultData runGameSim() {
         String sequence = "";
         int count = 0;
         ArrayList<String> inputs = combineLists();
@@ -50,16 +45,16 @@ public class PenneysGameMulti {
                 count++;
             } else {
 
-                GameData finalState = new GameData(getWinner(sequence, inputs), count, sequence);
+                GameResultData finalState = new GameResultData(getWinner(sequence, inputs), count, sequence);
                 return finalState;
             }
 
         }
-        GameData finalState = new GameData(-1, 0, "");
+        GameResultData finalState = new GameResultData(-1, 0, "");
         return finalState;
     }
 
-    public boolean checkFinished(String sequence, ArrayList<String> inputs){
+    private boolean checkFinished(String sequence, ArrayList<String> inputs){
         int sequenceLength = sequence.length();
         for (String input: inputs){
             int inputLength = input.length();
@@ -73,7 +68,7 @@ public class PenneysGameMulti {
         return false;
     }
 
-    public int getWinner(String sequence, ArrayList<String> inputs){
+    private int getWinner(String sequence, ArrayList<String> inputs){
         int sequenceLength = sequence.length();
         for (String input: inputs){
             int inputLength = input.length();
@@ -89,20 +84,19 @@ public class PenneysGameMulti {
         return -1;
     }
 
-    //TODO fix for ratios
-    public char genRandom(int base) {
-        int randomInt = (int)(gr.getBase() * Math.random());
+    private char genRandom() {
+        int randomInt = (int)(gr.getDenominator() * Math.random());
+        int face = gr.getRolledIndex(randomInt);
         char[] chars = gr.getCharSet();
-        return chars[randomInt];
+        return chars[face];
     }
 
-    //TODO fix for ratios
-    public String incrementList(String sequence) {
+    private String incrementList(String sequence) {
         String nextSequence = sequence;
         if (sequence.length() >= maxLength) {
             nextSequence = sequence.substring(1);
         }
-        char bin = genRandom(base);
+        char bin = genRandom();
         nextSequence = nextSequence.concat(String.valueOf(bin));
         return nextSequence;
     }

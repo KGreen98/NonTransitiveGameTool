@@ -3,14 +3,14 @@ package AdjMatrix.model.GameSimulation;
 import java.util.ArrayList;
 
 public class MultiSimulation {
-    public PenneysGameMulti simulator;
+    private GameSimulator simulator;
 
-    public MultiSimulation(PenneysGameMulti gameSimulatior) {
+    public MultiSimulation(GameSimulator gameSimulatior) {
         simulator = gameSimulatior;
     }
 
-    public ArrayList<GameData> runNewSimulation(int count){
-        ArrayList<GameData> simResults = new ArrayList<>();
+    public ArrayList<GameResultData> runNewSimulation(int count){
+        ArrayList<GameResultData> simResults = new ArrayList<>();
         for (int index =0; index < count; index++){
             simResults.add(simulator.runGameSim());
         }

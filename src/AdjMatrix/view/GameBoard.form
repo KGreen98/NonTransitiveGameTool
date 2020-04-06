@@ -111,10 +111,10 @@
             <children>
               <component id="e88ca" class="javax.swing.JLabel" binding="gameMessageLabel">
                 <constraints>
-                  <grid row="1" column="0" row-span="1" col-span="4" vsize-policy="0" hsize-policy="0" anchor="8" fill="0" indent="0" use-parent-layout="false"/>
+                  <grid row="1" column="0" row-span="1" col-span="1" vsize-policy="0" hsize-policy="0" anchor="8" fill="0" indent="0" use-parent-layout="false"/>
                 </constraints>
                 <properties>
-                  <text value="Label"/>
+                  <text value=""/>
                 </properties>
               </component>
               <component id="3dfc4" class="javax.swing.JButton" binding="playGameButton" default-binding="true">
@@ -194,7 +194,7 @@
                           <grid row="0" column="1" row-span="1" col-span="1" vsize-policy="0" hsize-policy="0" anchor="8" fill="0" indent="0" use-parent-layout="false"/>
                         </constraints>
                         <properties>
-                          <text value="Label"/>
+                          <text value="???"/>
                         </properties>
                       </component>
                       <component id="73ded" class="javax.swing.JLabel">
@@ -210,7 +210,7 @@
                           <grid row="0" column="3" row-span="1" col-span="1" vsize-policy="0" hsize-policy="0" anchor="8" fill="0" indent="0" use-parent-layout="false"/>
                         </constraints>
                         <properties>
-                          <text value="Label"/>
+                          <text value="???"/>
                         </properties>
                       </component>
                     </children>
@@ -242,7 +242,7 @@
               <grid row="0" column="1" row-span="1" col-span="1" vsize-policy="0" hsize-policy="0" anchor="8" fill="0" indent="0" use-parent-layout="false"/>
             </constraints>
             <properties>
-              <text value="Label"/>
+              <text value="( ? / ? )"/>
             </properties>
           </component>
           <component id="e23d" class="javax.swing.JLabel">
@@ -258,7 +258,7 @@
               <grid row="0" column="3" row-span="1" col-span="1" vsize-policy="0" hsize-policy="0" anchor="8" fill="0" indent="0" use-parent-layout="false"/>
             </constraints>
             <properties>
-              <text value="Label"/>
+              <text value="( ? / ? )"/>
             </properties>
           </component>
         </children>

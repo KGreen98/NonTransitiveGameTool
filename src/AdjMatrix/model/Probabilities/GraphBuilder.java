@@ -5,40 +5,27 @@ import AdjMatrix.model.Rules.GameRuleset;
 import java.util.*;
 
 public class GraphBuilder {
-    public ArrayList<List<String>> edgeList = new ArrayList<>();
-    public ArrayList<WeightedEdge> wEdgeList = new ArrayList<>();
-    public ArrayList<String> nodeList = new ArrayList<>();
-    private ArrayList<String> A;
-    private ArrayList<String> B;
+    private ArrayList<List<String>> edgeList = new ArrayList<>();
+    private ArrayList<WeightedEdge> wEdgeList = new ArrayList<>();
+    private ArrayList<String> nodeList = new ArrayList<>();
     private ArrayList<String> allInputs = new ArrayList<>();
-    private Queue<String> unvisitedNodeQueue = new LinkedList<>();
     private Queue<NodeString> wUnvisitedNodeQueue = new LinkedList<>();
     private GameRuleset gr;
 
     //Produces graph based on state transitions
     public GraphBuilder(ArrayList<String> InputA, ArrayList<String> InputB, GameRuleset gameRuleset){
-        A = InputA;
-        B = InputB;
         gr = gameRuleset;
 
         //all Inputs combines both user inputs
         allInputs.addAll(InputA);
         allInputs.addAll(InputB);
-        System.out.println(allInputs);
-//        String EmptyString = "";
-//        unvisitedNodeQueue.add(EmptyString);
-//        while (!unvisitedNodeQueue.isEmpty()){
-//            stringCompareAll(unvisitedNodeQueue.poll());
-//        }
+
         wUnvisitedNodeQueue.add(new NodeString("",0));
         while (!wUnvisitedNodeQueue.isEmpty()){
             stringCompareAll(wUnvisitedNodeQueue.poll());
         }
     }
 
-    public ArrayList<List<String>> getEdgeList() {
-        return edgeList;
-    }
     public ArrayList<WeightedEdge> getWeightedEdgeList() {
         return wEdgeList;
     }
@@ -83,43 +70,37 @@ public class GraphBuilder {
         nodeList.add(sequence);
 
         //add children of sequence iff is not a duplicate and not a goal node
-        //TODO fix for different ratios
         if (!allInputs.contains(sequence)){
             char[] base = gr.getCharSet();
             for (Character a: base) {
                 String ay = sequence;
                 String a0 = ay.concat(a.toString());
                 wUnvisitedNodeQueue.add(new NodeString(a0, gr.getOddsFromChar(a)));
-                //unvisitedNodeQueue.add(a0);
             }
          }
     }
 
-    public ArrayList<Integer> compareAll(ArrayList<String> AllInputs, String sequence){
-        String nodeString = sequence;
+    private ArrayList<Integer> compareAll(ArrayList<String> AllInputs, String sequence){
         ArrayList<Integer> list = new ArrayList<>();
         //Most recent n in tree as String
         for (String input: AllInputs) {
-            list.add(compare(input, sequence));
+            list.add(compareSequences(input, sequence));
         }
         return list;
     }
 
-    public int compare(String A, String sequence){
+    private int compareSequences(String A, String sequence){
         String nodeString = sequence;
         //Most recent n in tree as String
         String subA = A;
-
         //Set subA and NodeString to same length to compare.
         if (sequence.length() < A.length()){
             subA = A.substring(0, A.length()-1);
-            return 1 + compare(subA, sequence);
+            return 1 + compareSequences(subA, sequence);
         }
-
         if (sequence.length() > A.length()) {
             nodeString = nodeString.substring(nodeString.length() - A.length());
         }
-
         int maxCount = 0;
         while (subA.length()>=0) {
             if (subA.equals(nodeString)) {
@@ -129,7 +110,6 @@ public class GraphBuilder {
             subA = subA.substring(0, subA.length() - 1);
             maxCount++;
         }
-        System.out.println("Compare ERROR");
-        return 100000;
+        return 1000;
     }
 }

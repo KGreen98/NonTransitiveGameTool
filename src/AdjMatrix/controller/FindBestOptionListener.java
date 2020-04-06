@@ -1,13 +1,15 @@
 package AdjMatrix.controller;
 
-        import AdjMatrix.model.Model;
+import AdjMatrix.model.Model;
 
-        import java.awt.event.ActionEvent;
-        import java.awt.event.ActionListener;
-        import java.util.ArrayList;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+import java.util.ArrayList;
 
-        import AdjMatrix.view.GameBoard;
-        import AdjMatrix.view.View;
+import AdjMatrix.view.GameBoard;
+import AdjMatrix.view.View;
+
+import javax.swing.*;
 
 public class FindBestOptionListener implements ActionListener {
     private Model model;
@@ -22,9 +24,16 @@ public class FindBestOptionListener implements ActionListener {
 
     @Override
     public void actionPerformed(ActionEvent e) {
-        String inputA = gb.getaInput();
-        ArrayList<String> aInput =  model.splitUserInput(inputA);
-        ArrayList<String> bestInputB = model.findBestMoveB(aInput);
-        gb.setbInput(model.unsplitUserInput(bestInputB));
+        if (model.playerBTotalCombinations()>75000) {
+            JOptionPane.showMessageDialog(gb,
+                    "Scenario too complex to determine the best move for player B.",
+                    "Error",
+                    JOptionPane.ERROR_MESSAGE);
+        } else {
+            String inputA = gb.getaInput();
+            ArrayList<String> aInput = model.splitUserInput(inputA);
+            ArrayList<String> bestInputB = model.findBestMoveB(aInput);
+            gb.setbInput(model.unsplitUserInput(bestInputB));
+        }
     }
 }

@@ -1,7 +1,7 @@
 package AdjMatrix.controller;
 
 import AdjMatrix.model.Model;
-import AdjMatrix.model.GameSimulation.PenneysGameMulti;
+import AdjMatrix.model.GameSimulation.GameSimulator;
 import AdjMatrix.model.Rules.GameRuleset;
 import AdjMatrix.view.GameBoard;
 import AdjMatrix.view.RulesBoard;
@@ -57,7 +57,7 @@ public class Controller {
                 inputsA = theModel.splitUserInput(inputA);
                 inputsB = theModel.splitUserInput(inputB);
 
-                PenneysGameMulti a = new PenneysGameMulti(inputsA, inputsB, ruleset);
+                GameSimulator a = new GameSimulator(inputsA, inputsB, ruleset);
                 String result = a.runGameSim().toString();
                 gb.setGameMessageBox(result);
             }
